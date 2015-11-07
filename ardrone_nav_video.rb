@@ -10,8 +10,15 @@ connection :videodrone, :adaptor => :ardrone_video, :port => '192.168.1.1:5555'
 device :video, :driver => :ardrone_video, :connection => :videodrone
 
 work do
-  on nav, :update => :nav_update
+  # on nav, :update => :nav_update
   on video, :frame => :v_frame
+
+  on nav, :navdata => proc { |caller, navdata| puts "Sequence number: #{ navdata.sequence_number }" }
+  on nav, :demo => proc { |caller, navdata, nav_option_demo|
+    puts "Ardrone pitch: #{ nav_option_demo.pitch }"
+    puts "Ardrone roll:  #{ nav_option_demo.roll }"
+    puts "Ardrone yaw:   #{ nav_option_demo.yaw }"
+  }
 
   drone.start
   drone.take_off
